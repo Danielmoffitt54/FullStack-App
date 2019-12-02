@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
-import { set } from 'mongoose';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -60,6 +58,32 @@ export default class App extends React.Component {
     });
   }
 
+  deleteFromDB = idToDelete => {
+    let objIdToDelete = null;
+
+    this.state.data.forEach(dat => {
+      if (String(dat.id) === String(idToDelete)) {
+        objIdToDelete = dat.id;
+      }
+
+      axios({
+        url: 'http://localhost:3001/api/deleteData',
+        method: 'DELETE',
+        data: {
+          id: objIdToDelete
+        }
+      }).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.log(error);
+      });
+    });
+  }
+
+  updateDataInDB = (idToUpdate, newMessage) => {
+    console.log('update');
+  }
+
   renderListItems() {
     const { data } = this.state;
 
@@ -78,7 +102,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { data, message, intervalIsSet, idToDelete, idToUpdate, newMessage } = this.state;
+    const { message, idToDelete, idToUpdate, newMessage } = this.state;
 
     return (
       <div className="App">
@@ -98,14 +122,26 @@ export default class App extends React.Component {
         </div>
 
         <div className='App-section'>
-          <input />
-          <button>DELETE</button>
+          <input
+            type='text'
+            placeholder='Enter ID of Message to delete'
+            onChange={event => this.setState({ idToDelete: event.target.value})}
+          />
+          <button onClick={() => this.deleteFromDB(idToDelete)}>DELETE</button>
         </div>
 
         <div className='App-section'>
-          <input />
-          <input />
-          <button>UPDATE</button>
+          <input 
+            type='text'
+            placeholder='Enter ID of Message to update'
+            onChange={event => this.setState({ idToUpdate: event.target.value})}
+          />
+          <input 
+            type='text'
+            placeholder='Add a New Message to update'
+            onChange={event => this.setState({ newMessage: event.target.value})}
+          />
+          <button onClick={() => this.updateDataInDB(idToUpdate, newMessage)}>UPDATE</button>
         </div>
 
       </div>

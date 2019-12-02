@@ -46,9 +46,9 @@ router.get('/getData', (req, res) => {
 
         if (err) {
             return res.json({ success : false, error: err });
+        } else {
+            return res.json({ success : true, data: data });
         }
-
-        return res.json({ success : true, error: data });
     });
 });
 
@@ -64,7 +64,7 @@ router.post('/postData', (req, res) => {
         return res.json({
             success: false,
             error: 'INVALID INPUT'
-        })
+        });
     }
 
     newData.id;
@@ -72,11 +72,20 @@ router.post('/postData', (req, res) => {
 
     newData.save(err => {
         if (err) {
-            return res.json({ success: false, error: err 
-            });
+            return res.json({ success: false, error: err });
+        } else {
+            return res.json({ success: true });
         }
+    });
+});
 
-        return res.json({ success: true });
+router.delete('/deleteData', (req, res) => {
+    Data.deleteOne({ id: req.body.id }, err => {
+        if (err) {
+            return res.json({ success: false, error: err });
+        } else {
+            return res.json({ success: true });
+        }
     });
 });
 
